@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package ai.metathings.component.service.echo;
+
+import "google/protobuf/wrappers.proto";
+
+message EchoRequest {
+	google.protobuf.StringValue text = 1;
+}
+
+message EchoResponse {
+	string text = 1;
+}
+
+service EchoService {
+	rpc Echo(EchoRequest) returns (EchoResponse) {}
+}
