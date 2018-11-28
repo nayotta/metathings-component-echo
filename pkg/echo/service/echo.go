@@ -9,9 +9,13 @@ import (
 	pb "github.com/nayotta/metathings-component-echo/proto"
 )
 
-type EchoModule struct{}
+type EchoServiceOption struct{}
 
-func (self *EchoModule) PROCESS_GRPC_Echo(ctx context.Context, in *any.Any) (*any.Any, error) {
+type EchoService struct {
+	opt *EchoServiceOption
+}
+
+func (self *EchoService) PROCESS_GRPC_Echo(ctx context.Context, in *any.Any) (*any.Any, error) {
 	var err error
 	req := &pb.EchoRequest{}
 
@@ -32,6 +36,12 @@ func (self *EchoModule) PROCESS_GRPC_Echo(ctx context.Context, in *any.Any) (*an
 	return out, nil
 }
 
-func (self *EchoModule) Echo(ctx context.Context, req *pb.EchoRequest) (*pb.EchoResponse, error) {
+func (self *EchoService) Echo(ctx context.Context, req *pb.EchoRequest) (*pb.EchoResponse, error) {
 	return &pb.EchoResponse{Text: req.GetText().GetValue()}, nil
+}
+
+func NewEchoService(opt *EchoServiceOption) (*EchoService, error) {
+	return &EchoService{
+		opt: opt,
+	}, nil
 }
