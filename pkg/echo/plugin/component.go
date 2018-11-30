@@ -2,6 +2,7 @@ package main
 
 import (
 	"strings"
+	"time"
 
 	cmd_contrib "github.com/nayotta/metathings/cmd/contrib"
 	cmd_helper "github.com/nayotta/metathings/pkg/common/cmd"
@@ -28,8 +29,9 @@ func CreateRunModuleOption() RunModuleOption {
 
 func NewEchoModuleOption(component component.Component, opt *RunModuleOption) *EchoModuleOption {
 	return &EchoModuleOption{
-		Name:      opt.GetName(),
-		Component: component.Name(),
+		Name:              opt.GetName(),
+		Component:         component.Name(),
+		HeartbeatInterval: time.Duration(opt.Heartbeat.GetInterval()) * time.Second,
 	}
 }
 
@@ -87,8 +89,9 @@ func (self *EchoComponent) NewModule(args []string) (component.Module, error) {
 				cmd_contrib.LoggerOptioner,
 				cmd_contrib.ListenOptioner,
 				cmd_contrib.TransportCredentialOptioner,
+				cmd_contrib.ServiceEndpointsOptioner,
 			) {
-				return opt, opt, opt
+				return opt, opt, opt, opt
 			},
 			cmd_contrib.NewLogger("echo"),
 			NewEchoServiceOption,
@@ -97,6 +100,7 @@ func (self *EchoComponent) NewModule(args []string) (component.Module, error) {
 			cmd_contrib.NewTransportCredentials,
 			cmd_contrib.NewListener,
 			cmd_contrib.NewGrpcServer,
+			cmd_contrib.NewClientFactory,
 			func(m *EchoModule) (pb.EchoServiceServer, component_pb.ModuleServiceServer) {
 				return m.srv, component.NewGrpcModuleWrapper(m.srv)
 			},
