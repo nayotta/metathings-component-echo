@@ -15,7 +15,7 @@ type EchoService struct {
 	opt *EchoServiceOption
 }
 
-func (self *EchoService) PROCESS_GRPC_Echo(ctx context.Context, in *any.Any) (*any.Any, error) {
+func (self *EchoService) HANDLE_GRPC_Echo(ctx context.Context, in *any.Any) (*any.Any, error) {
 	var err error
 	req := &pb.EchoRequest{}
 

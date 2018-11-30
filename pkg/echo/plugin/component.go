@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"strings"
 
 	cmd_contrib "github.com/nayotta/metathings/cmd/contrib"
@@ -18,6 +17,7 @@ import (
 
 type RunModuleOption struct {
 	cmd_contrib.ModuleBaseOption `mapstructure:",squash"`
+	Heartbeat                    cmd_contrib.HeartbeatOption `mapstruct:"heartbeat"`
 }
 
 func CreateRunModuleOption() RunModuleOption {
@@ -26,8 +26,11 @@ func CreateRunModuleOption() RunModuleOption {
 	}
 }
 
-func NewEchoModuleOption(opt *RunModuleOption) *EchoModuleOption {
-	return &EchoModuleOption{}
+func NewEchoModuleOption(component component.Component, opt *RunModuleOption) *EchoModuleOption {
+	return &EchoModuleOption{
+		Name:      opt.GetName(),
+		Component: component.Name(),
+	}
 }
 
 func NewEchoServiceOption(opt *RunModuleOption) *service.EchoServiceOption {
@@ -45,6 +48,7 @@ func (self *EchoComponent) NewModule(args []string) (component.Module, error) {
 
 	app := fx.New(
 		fx.Provide(
+			func() component.Component { return self },
 			func() *EchoModule { return mdl },
 			func() (*RunModuleOption, error) {
 				tmp_opt := CreateRunModuleOption()
@@ -55,11 +59,10 @@ func (self *EchoComponent) NewModule(args []string) (component.Module, error) {
 				flags.StringVarP(opt.GetConfigP(), "config", "c", "", "Config file")
 				flags.StringVar(opt.GetNameP(), "name", "echo", "Module name")
 				flags.StringVarP(opt.GetListenP(), "listen", "l", "127.0.0.1:13401", "MetaThings Echo Service listening address")
+				flags.IntVar(opt.Heartbeat.GetIntervalP(), "heartbeat-interval", 15, "MetaThings Echo Service heartbeat interval (seconds)")
 				if err = flags.Parse(args); err != nil {
 					return nil, err
 				}
-
-				fmt.Printf("!!!! %v\n", cmd_helper.GetStageFromEnv())
 
 				if opt.GetConfig() != "" {
 					v := viper.New()
