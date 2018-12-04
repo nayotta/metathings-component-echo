@@ -20,7 +20,6 @@ import:
 - package: go.uber.org/fx
   version: ~1.7.1
 - package: golang.org/x/net
-  version: adae6a3d119ae4890b46832a2e88a95adc62b8e7
   subpackages:
   - context
 - package: google.golang.org/grpc

@@ -1,5 +1,5 @@
-hash: f04bb6efb5151b02c8ddc3344bd266ec1c6bc517129d9cfdb509903681a0203f
-updated: 2018-11-26T20:03:52.988484+08:00
+hash: fa56b28d3b10ac815679fbc41ebac401b0c791b711acbffa201867e76c4e014f
+updated: 2018-12-04T17:15:56.305286+08:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: ccc981bf80385c528a65fbfdd49bf2d8da22aa23
@@ -46,7 +46,7 @@ imports:
 - name: github.com/mwitkow/go-proto-validators
   version: 0950a79900071e9f3f5979b78078c599376422fd
 - name: github.com/nayotta/metathings
-  version: fbed36e881ce1992f3d83fb7e63e12599667b71e
+  version: 22c442c54b21e423f13646a50ad328bec86bc86c
   subpackages:
   - cmd/contrib
   - pkg/common/application_credential_manager
@@ -67,6 +67,7 @@ imports:
   - pkg/proto/constant/state
   - pkg/proto/core_agent
   - pkg/proto/cored
+  - pkg/proto/device
   - pkg/proto/deviced
   - pkg/proto/echo
   - pkg/proto/identityd
