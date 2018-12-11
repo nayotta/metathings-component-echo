@@ -1,7 +1,6 @@
 DOCKER_BIN=$(shell which docker)
 
 all:
-	$(MAKE) -C proto all
 	go build --buildmode=plugin -o lib/echo.so pkg/echo/plugin/*.go
 
 protos_from_docker:

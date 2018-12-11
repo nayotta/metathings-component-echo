@@ -40,6 +40,22 @@ func (self *EchoService) Echo(ctx context.Context, req *pb.EchoRequest) (*pb.Ech
 	return &pb.EchoResponse{Text: req.GetText().GetValue()}, nil
 }
 
+func (self *EchoService) StreamingEcho(stm pb.EchoService_StreamingEchoServer) error {
+	var req *pb.EchoRequest
+	var err error
+
+	for {
+		if req, err = stm.Recv(); err != nil {
+			return err
+		}
+
+		res := &pb.EchoResponse{Text: req.GetText().GetValue()}
+		if err = stm.Send(res); err != nil {
+			return err
+		}
+	}
+}
+
 func NewEchoService(opt *EchoServiceOption) (*EchoService, error) {
 	return &EchoService{
 		opt: opt,
