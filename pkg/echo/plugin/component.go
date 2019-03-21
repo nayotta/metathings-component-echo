@@ -1,14 +1,17 @@
 package main
 
 import (
+	"context"
 	"strings"
 	"time"
 
 	cmd_contrib "github.com/nayotta/metathings/cmd/contrib"
+	client_helper "github.com/nayotta/metathings/pkg/common/client"
 	cmd_helper "github.com/nayotta/metathings/pkg/common/cmd"
 	component "github.com/nayotta/metathings/pkg/component"
 	component_pb "github.com/nayotta/metathings/pkg/proto/component"
 	"github.com/nayotta/viper"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/pflag"
 	"go.uber.org/fx"
 
@@ -49,9 +52,9 @@ func (self *EchoComponent) NewModule(args []string) (component.Module, error) {
 	mdl := &EchoModule{}
 
 	app := fx.New(
+		fx.NopLogger,
 		fx.Provide(
 			func() component.Component { return self },
-			func() *EchoModule { return mdl },
 			func() (*RunModuleOption, error) {
 				tmp_opt := CreateRunModuleOption()
 				var opt *RunModuleOption = &tmp_opt
@@ -101,14 +104,28 @@ func (self *EchoComponent) NewModule(args []string) (component.Module, error) {
 			cmd_contrib.NewListener,
 			cmd_contrib.NewGrpcServer,
 			cmd_contrib.NewClientFactory,
-			func(m *EchoModule) (pb.EchoServiceServer, component_pb.ModuleServiceServer) {
-				return m.srv, component.NewGrpcModuleWrapper(m.srv)
+			func(logger log.FieldLogger, opt *EchoModuleOption, srv *service.EchoService, cli_fty *client_helper.ClientFactory, lc fx.Lifecycle) *EchoModule {
+				mdl.logger = logger
+				mdl.opt = opt
+				mdl.srv = srv
+				mdl.cli_fty = cli_fty
+
+				lc.Append(fx.Hook{
+					OnStart: func(context.Context) error {
+						go mdl.heartbeat_loop()
+						return nil
+					},
+				})
+
+				return mdl
+			},
+			func(m *EchoModule, logger log.FieldLogger) (pb.EchoServiceServer, component_pb.ModuleServiceServer) {
+				return m.srv, component.NewGrpcModuleWrapper(m.srv, logger)
 			},
 		),
 		fx.Invoke(
 			pb.RegisterEchoServiceServer,
 			component_pb.RegisterModuleServiceServer,
-			SetupEchoModule,
 		),
 	)
 	mdl.app = app

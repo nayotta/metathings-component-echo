@@ -12,7 +12,15 @@ message EchoResponse {
 	string text = 1;
 }
 
+message StreamingEchoRequest {
+	google.protobuf.StringValue text = 1;
+}
+
+message StreamingEchoResponse {
+	string text = 1;
+}
+
 service EchoService {
 	rpc Echo(EchoRequest) returns (EchoResponse) {}
-	rpc StreamingEcho(stream EchoRequest) returns (stream EchoResponse) {}
+	rpc StreamingEcho(stream StreamingEchoRequest) returns (stream StreamingEchoResponse) {}
 }

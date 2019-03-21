@@ -6,6 +6,7 @@ import (
 	"github.com/golang/protobuf/ptypes"
 	"github.com/golang/protobuf/ptypes/any"
 	component_pb "github.com/nayotta/metathings/pkg/proto/component"
+	log "github.com/sirupsen/logrus"
 
 	pb "github.com/nayotta/metathings-component-echo/proto"
 )
@@ -13,7 +14,8 @@ import (
 type EchoServiceOption struct{}
 
 type EchoService struct {
-	opt *EchoServiceOption
+	opt    *EchoServiceOption
+	logger log.FieldLogger
 }
 
 func (self *EchoService) HANDLE_GRPC_Echo(ctx context.Context, in *any.Any) (*any.Any, error) {
@@ -38,7 +40,9 @@ func (self *EchoService) HANDLE_GRPC_Echo(ctx context.Context, in *any.Any) (*an
 }
 
 func (self *EchoService) Echo(ctx context.Context, req *pb.EchoRequest) (*pb.EchoResponse, error) {
-	return &pb.EchoResponse{Text: req.GetText().GetValue()}, nil
+	text := req.GetText().GetValue()
+	self.logger.WithField("#method", "Echo").Infof(text)
+	return &pb.EchoResponse{Text: text}, nil
 }
 
 type StreamingEchoServerWrapper struct {
@@ -98,20 +102,27 @@ func (self *EchoService) StreamingEcho(stm pb.EchoService_StreamingEchoServer) e
 	var req *pb.EchoRequest
 	var err error
 
+	self.logger.Infof("streaming echo started")
+	defer self.logger.Infof("streaming echo closed")
 	for {
 		if req, err = stm.Recv(); err != nil {
 			return err
 		}
 
-		res := &pb.EchoResponse{Text: req.GetText().GetValue()}
+		text := req.GetText().GetValue()
+		self.logger.WithField("#method", "StreamingEcho").Infof(text)
+
+		res := &pb.EchoResponse{Text: text}
 		if err = stm.Send(res); err != nil {
 			return err
 		}
 	}
 }
 
-func NewEchoService(opt *EchoServiceOption) (*EchoService, error) {
-	return &EchoService{
-		opt: opt,
-	}, nil
+func NewEchoService(opt *EchoServiceOption, logger log.FieldLogger) (*EchoService, error) {
+	srv := &EchoService{
+		opt:    opt,
+		logger: logger,
+	}
+	return srv, nil
 }
