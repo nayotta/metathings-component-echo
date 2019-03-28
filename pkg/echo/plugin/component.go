@@ -5,18 +5,18 @@ import (
 	"strings"
 	"time"
 
-	cmd_contrib "github.com/nayotta/metathings/cmd/contrib"
-	client_helper "github.com/nayotta/metathings/pkg/common/client"
-	cmd_helper "github.com/nayotta/metathings/pkg/common/cmd"
-	component "github.com/nayotta/metathings/pkg/component"
-	component_pb "github.com/nayotta/metathings/pkg/proto/component"
-	"github.com/nayotta/viper"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/pflag"
 	"go.uber.org/fx"
 
 	service "github.com/nayotta/metathings-component-echo/pkg/echo/service"
 	pb "github.com/nayotta/metathings-component-echo/proto"
+	cmd_contrib "github.com/nayotta/metathings/cmd/contrib"
+	client_helper "github.com/nayotta/metathings/pkg/common/client"
+	cmd_helper "github.com/nayotta/metathings/pkg/common/cmd"
+	component "github.com/nayotta/metathings/pkg/component"
+	component_pb "github.com/nayotta/metathings/pkg/proto/component"
+	"github.com/nayotta/viper"
 )
 
 type RunModuleOption struct {

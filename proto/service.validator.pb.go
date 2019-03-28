@@ -25,3 +25,14 @@ func (this *EchoRequest) Validate() error {
 func (this *EchoResponse) Validate() error {
 	return nil
 }
+func (this *StreamingEchoRequest) Validate() error {
+	if this.Text != nil {
+		if err := github_com_mwitkow_go_proto_validators.CallValidatorIfExists(this.Text); err != nil {
+			return github_com_mwitkow_go_proto_validators.FieldError("Text", err)
+		}
+	}
+	return nil
+}
+func (this *StreamingEchoResponse) Validate() error {
+	return nil
+}
