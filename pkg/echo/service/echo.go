@@ -8,13 +8,11 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	pb "github.com/nayotta/metathings-component-echo/proto"
+	component "github.com/nayotta/metathings/pkg/component"
 	component_pb "github.com/nayotta/metathings/pkg/proto/component"
 )
 
-type EchoServiceOption struct{}
-
 type EchoService struct {
-	opt    *EchoServiceOption
 	logger log.FieldLogger
 }
 
@@ -119,10 +117,8 @@ func (self *EchoService) StreamingEcho(stm pb.EchoService_StreamingEchoServer) e
 	}
 }
 
-func NewEchoService(opt *EchoServiceOption, logger log.FieldLogger) (*EchoService, error) {
-	srv := &EchoService{
-		opt:    opt,
-		logger: logger,
-	}
-	return srv, nil
+func (self *EchoService) InitModuleService(m *component.Module) error {
+	self.logger = m.Logger()
+
+	return nil
 }

@@ -1,0 +1,18 @@
+debug:
+  name: echo
+  service:
+    scheme: mtp+grpc
+    host: 0.0.0.0
+    port: 13401
+  log:
+    level: debug
+  heartbeat:
+    interval: 15
+  credential:
+    id: 919bb82286104319ba49c502cdf09af5
+    secret: tEBiAULalBY0MYzIhKCHM9HK2huSCBkWv9m7EJmmmlnX7BOX6dCVSCZcomUHmx2oGgUvzsLNyQgPau7UTingTIshO2e726GlT2GMA4mVXImpG8dQoiEBroZrtZQPPzk3
+  service_endpoint:
+    device:
+      address: 192.168.99.100:15002
+    default:
+      address: 192.168.99.100:21733
