@@ -11,8 +11,12 @@ debug:
   credential:
     id: <credential-id>
     secret: <credential-secret>
+  transport_credential:
+    plain_text: true
   service_endpoint:
     device:
       address: <device-address> # MUST!!!
+      plain_text: true
     default:
       address: <metathings-address> # MUST!!!
+      # ...
