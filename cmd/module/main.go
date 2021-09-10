@@ -5,8 +5,13 @@ import (
 	component "github.com/nayotta/metathings/pkg/component"
 )
 
+var Version string
+
 func main() {
-	mdl, err := component.NewModule("echo", new(service.EchoService))
+	mdl, err := component.NewModule(
+		component.SetTarget(new(service.EchoService)),
+		component.SetVersion(Version),
+	)
 	if err != nil {
 		panic(err)
 	}

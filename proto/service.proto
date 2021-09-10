@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 package ai.metathings.component.service.echo;
+option go_package = "github.com/nayotta/metathings-component-echo/proto";
 
 import "google/protobuf/wrappers.proto";
 

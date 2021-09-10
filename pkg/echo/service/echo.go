@@ -9,10 +9,12 @@ import (
 
 	pb "github.com/nayotta/metathings-component-echo/proto"
 	component "github.com/nayotta/metathings/pkg/component"
-	component_pb "github.com/nayotta/metathings/pkg/proto/component"
+	component_ext_firmware_service "github.com/nayotta/metathings/pkg/component_ext/firmware/service"
+	component_pb "github.com/nayotta/metathings/proto/component"
 )
 
 type EchoService struct {
+	*component_ext_firmware_service.ComponentExtFirmwareService
 	logger log.FieldLogger
 }
 
@@ -118,7 +120,13 @@ func (self *EchoService) StreamingEcho(stm pb.EchoService_StreamingEchoServer) e
 }
 
 func (self *EchoService) InitModuleService(m *component.Module) error {
+	var err error
+
 	self.logger = m.Logger()
+	self.ComponentExtFirmwareService, err = component_ext_firmware_service.NewComponentExtFirmwareService(m)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
